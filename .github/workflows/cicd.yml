@@ -1,0 +1,29 @@
+name: Demo CICD pipeline
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Check Docker VErsion
+        run: docker --version
+      - name: Build Docker Image
+        run: docker build -t demo-cicd:latest .
+
+      - name: Run Docker Container
+        run: docker run -d -p 8080:80 --name demo-cicd-container demo-cicd:latest
+      - name: Test Application
+        run: |
+          curl -f http://localhost:8080 || exit 1
+
+      - name: Stop and Remove Container
+
+        run: |
+          docker stop demo-cicd-container
+          docker rm demo-cicd-container
+
+      - name: Clean up Docker Image
+        run: docker rmi demo-cicd:latest
