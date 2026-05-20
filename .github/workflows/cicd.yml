@@ -17,7 +17,7 @@ jobs:
         run: docker run -d -p 8080:80 --name demo-cicd-container demo-cicd:latest
       - name: Test Application
         run: |
-          curl -f http://localhost:8080 || exit 1
+          curl -f http://localhost:8080
 
       - name: Stop and Remove Container
 
