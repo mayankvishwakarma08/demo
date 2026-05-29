@@ -7,7 +7,7 @@ jobs:
   depoly:
     runs-on: ubuntu-latest
 
-  steps:
+    steps:
       - name: deploy to ec2 server
       run : |
         echo "${{secrets.EC2_SSH_KEY }}"
