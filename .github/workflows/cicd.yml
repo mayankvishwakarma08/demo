@@ -1,23 +1,28 @@
-name: EC2 demo
-on: 
-  push: 
-    branches: 
+name: EC2 Demo
+
+on:
+  push:
+    branches:
       - main
+
 jobs:
-  depoly:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: deploy to ec2 server
-      run : |
-        echo "${{secrets.EC2_SSH_KEY }}"
-        chmod 600 demo-session-vpc.pem
+      - name: Deploy Website to EC2
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
 
-        ssh -i demo-session-vpc.pem -o StrictHostKeyChecking=no ${{secrets.EC2_USERNAME}}@{{secrets.EC2_HOST}} << EOF
+          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << EOF
 
-        cd demo 
-        git pull origin main
-        sudo cp -r * /var/www/html/
-        sudo systemctl restart nginx
+          cd ~/demo
+          git pull origin main
 
-        EOF
+          sudo rm -rf /var/www/html/*
+          sudo cp -r * /var/www/html/
+
+          sudo systemctl restart nginx
+
+          EOF
